@@ -1,0 +1,6 @@
+@CounsellingPlatform.WebAPI_HostAddress = http://localhost:5275
+
+GET {{CounsellingPlatform.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,39 @@
+# Ignore Visual Studio temporary files, build results, and user-specific files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Angular build output
+dist/
+
+# Environment files
+.env
+.env.*
+
+# Mac system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Others
+API/**/bin/
+API/**/obj/
+API/.vs/
+UI/counselling-platform/node_modules/
+UI/counselling-platform/dist/
