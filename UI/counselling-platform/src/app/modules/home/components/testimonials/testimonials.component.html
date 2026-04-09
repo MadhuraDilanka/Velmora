@@ -1,0 +1,63 @@
+<section class="testimonials">
+  <div class="testimonials__container">
+
+    <div class="testimonials__header">
+      <span class="testimonials__label">Testimonials</span>
+      <h2 class="testimonials__title">What our clients say</h2>
+      <p class="testimonials__subtitle">
+        Real stories from real people who took the first step toward a healthier mind.
+      </p>
+    </div>
+
+    <div class="testimonials__grid">
+      <div class="testimonial-card" *ngFor="let t of testimonials; let i = index" [class.testimonial-card--featured]="i === 1">
+
+        <div class="testimonial-card__quote-icon">
+          <svg viewBox="0 0 32 24" fill="none">
+            <path d="M0 24V14.4C0 6.4 4.8 1.6 14.4 0L16 2.4C11.2 3.6 8.4 6.4 8 10.4H13.6V24H0ZM18.4 24V14.4C18.4 6.4 23.2 1.6 32 0L32 2.4C27.2 3.6 24.4 6.4 24 10.4H29.6V24H18.4Z"
+                  fill="currentColor"/>
+          </svg>
+        </div>
+
+        <div class="testimonial-card__stars">
+          <span *ngFor="let s of getStars(t.rating)">★</span>
+        </div>
+
+        <p class="testimonial-card__quote">{{ t.quote }}</p>
+
+        <div class="testimonial-card__author">
+          <img [src]="t.imageUrl" [alt]="t.name" class="testimonial-card__avatar"/>
+          <div>
+            <div class="testimonial-card__name">{{ t.name }}</div>
+            <div class="testimonial-card__role">{{ t.role }}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trust bar -->
+    <div class="testimonials__trust-bar">
+      <div class="testimonials__trust-item">
+        <span class="testimonials__trust-value">2,500+</span>
+        <span class="testimonials__trust-label">Happy Clients</span>
+      </div>
+      <div class="testimonials__trust-sep"></div>
+      <div class="testimonials__trust-item">
+        <span class="testimonials__trust-value">4.9 / 5</span>
+        <span class="testimonials__trust-label">Average Rating</span>
+      </div>
+      <div class="testimonials__trust-sep"></div>
+      <div class="testimonials__trust-item">
+        <span class="testimonials__trust-value">500+</span>
+        <span class="testimonials__trust-label">Verified Counsellors</span>
+      </div>
+      <div class="testimonials__trust-sep"></div>
+      <div class="testimonials__trust-item">
+        <span class="testimonials__trust-value">50,000+</span>
+        <span class="testimonials__trust-label">Sessions Completed</span>
+      </div>
+    </div>
+
+  </div>
+</section>

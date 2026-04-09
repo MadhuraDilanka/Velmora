@@ -1,0 +1,25 @@
+import { Component } from '@angular/core';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { HeroComponent } from '../hero/hero.component';
+import { FeaturesComponent } from '../features/features.component';
+import { CounsellorCardsComponent } from '../counsellor-cards/counsellor-cards.component';
+import { HowItWorksComponent } from '../how-it-works/how-it-works.component';
+import { TestimonialsComponent } from '../testimonials/testimonials.component';
+import { FooterComponent } from '../footer/footer.component';
+
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [
+    NavbarComponent,
+    HeroComponent,
+    FeaturesComponent,
+    CounsellorCardsComponent,
+    HowItWorksComponent,
+    TestimonialsComponent,
+    FooterComponent
+  ],
+  templateUrl: './home-page.component.html',
+  styleUrls: ['./home-page.component.scss']
+})
+export class HomePageComponent { }

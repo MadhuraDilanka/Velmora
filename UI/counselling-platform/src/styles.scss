@@ -8,10 +8,17 @@ html, body {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
-body { background: #f1f5f9; }
+body { background: #ffffff; }
 
 a { text-decoration: none; }
 
 input, button, select, textarea { font-family: inherit; }
+
+/* Smooth anchor scrolling offset for fixed navbar */
+[id] {
+  scroll-margin-top: 80px;
+}
+

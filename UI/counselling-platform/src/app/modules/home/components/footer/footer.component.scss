@@ -1,0 +1,228 @@
+$primary: #4A90A4;
+$primary-light: #e8f4f8;
+$text-muted: rgba(255, 255, 255, 0.55);
+$text-body: rgba(255, 255, 255, 0.75);
+$white: #ffffff;
+$bg-dark: #0f1e2a;
+$bg-medium: #162433;
+$border-dark: rgba(255, 255, 255, 0.07);
+
+.footer {
+  background: $bg-dark;
+
+  &__main {
+    padding: 72px 0 56px;
+  }
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  &__main &__container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 48px;
+  }
+
+  // ── Brand ─────────────────────────────────────────────────────────────────
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+
+    span {
+      font-size: 22px;
+      font-weight: 800;
+      color: $white;
+      letter-spacing: -0.5px;
+    }
+  }
+
+  &__tagline {
+    font-size: 14px;
+    line-height: 1.75;
+    color: $text-body;
+    margin: 0;
+    max-width: 280px;
+  }
+
+  &__social {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__social-link {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid $border-dark;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-body;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &:hover {
+      background: $primary;
+      border-color: $primary;
+      color: $white;
+      transform: translateY(-2px);
+    }
+  }
+
+  // ── Columns ───────────────────────────────────────────────────────────────
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__col-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: $white;
+    margin: 0;
+    letter-spacing: 0.3px;
+  }
+
+  &__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    li a {
+      font-size: 14px;
+      color: $text-body;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+
+  &__contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: $text-body;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        color: $primary;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__cta-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 12px 24px;
+    background: $primary;
+    color: $white;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(74, 144, 164, 0.4);
+
+    &:hover {
+      background: #357a8e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(74, 144, 164, 0.5);
+    }
+  }
+
+  // ── Bottom bar ───────────────────────────────────────────────────────────
+  &__bottom {
+    border-top: 1px solid $border-dark;
+    padding: 20px 0;
+  }
+
+  &__bottom-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    span {
+      font-size: 13px;
+      color: $text-muted;
+    }
+  }
+
+  &__legal {
+    display: flex;
+    gap: 20px;
+
+    a {
+      font-size: 13px;
+      color: $text-muted;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+}
+
+// ── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 1024px) {
+  .footer__main .footer__container {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer__main .footer__container {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__bottom-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer__legal {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

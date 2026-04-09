@@ -1,0 +1,47 @@
+<section class="features" id="about">
+  <div class="features__container">
+
+    <div class="features__header">
+      <span class="features__label">Why Velmora</span>
+      <h2 class="features__title">Everything you need to<br>feel supported</h2>
+      <p class="features__subtitle">
+        We built Velmora around trust, privacy, and genuine care — so you can focus entirely on your healing.
+      </p>
+    </div>
+
+    <div class="features__grid">
+      <div
+        class="feature-card"
+        *ngFor="let feature of features"
+        [class]="'feature-card feature-card--' + feature.colorClass"
+      >
+        <div class="feature-card__icon-wrap">
+          <!-- Verified icon -->
+          <svg *ngIf="feature.icon === 'verified'" viewBox="0 0 24 24" fill="none">
+            <path d="M9 12L11 14L15 10M20.618 5.984C19.456 5.694 18.193 5.23 17.077 4.532C15.961 3.835 15.048 3.016 14.265 2.408C13.218 1.613 11.782 1.613 10.735 2.408C9.952 3.016 9.039 3.835 7.923 4.532C6.806 5.23 5.544 5.694 4.382 5.984C3.093 6.307 2.25 7.522 2.402 8.84C2.594 10.508 3.02 12.597 4.062 14.5C5.103 16.403 6.6 18.048 7.9 19.24C8.936 20.19 10.468 20.19 11.504 19.24C12.8 18.048 14.297 16.403 15.338 14.5C16.38 12.597 16.806 10.508 16.998 8.84C17.15 7.522 16.307 6.307 15.018 5.984H20.618Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <!-- Lock icon -->
+          <svg *ngIf="feature.icon === 'lock'" viewBox="0 0 24 24" fill="none">
+            <path d="M12 14.5V16.5M8 11V7C8 4.791 9.791 3 12 3C14.209 3 16 4.791 16 7V11M5 11H19C19.552 11 20 11.448 20 12V20C20 20.552 19.552 21 19 21H5C4.448 21 4 20.552 4 20V12C4 11.448 4.448 11 5 11Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <!-- Calendar icon -->
+          <svg *ngIf="feature.icon === 'calendar'" viewBox="0 0 24 24" fill="none">
+            <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.105 21 21 20.105 21 19V7C21 5.895 20.105 5 19 5H5C3.895 5 3 5.895 3 7V19C3 20.105 3.895 21 5 21Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <!-- Shield icon -->
+          <svg *ngIf="feature.icon === 'shield'" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="feature-card__title">{{ feature.title }}</h3>
+        <p class="feature-card__description">{{ feature.description }}</p>
+      </div>
+    </div>
+
+  </div>
+</section>

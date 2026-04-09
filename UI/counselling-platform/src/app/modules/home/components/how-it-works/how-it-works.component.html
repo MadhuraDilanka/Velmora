@@ -1,0 +1,56 @@
+<section class="how-it-works" id="how-it-works">
+  <div class="how-it-works__container">
+
+    <div class="how-it-works__header">
+      <span class="how-it-works__label">Simple Process</span>
+      <h2 class="how-it-works__title">Get support in<br>three easy steps</h2>
+      <p class="how-it-works__subtitle">
+        Starting your wellness journey has never been easier. Here's how it works.
+      </p>
+    </div>
+
+    <div class="how-it-works__steps">
+      <div class="hiw-step" *ngFor="let step of steps; let i = index; let last = last">
+
+        <div class="hiw-step__card">
+          <div class="hiw-step__number">{{ step.number }}</div>
+
+          <div class="hiw-step__icon-wrap">
+            <!-- User icon -->
+            <svg *ngIf="step.icon === 'user'" viewBox="0 0 24 24" fill="none">
+              <path d="M20 21V19C20 16.791 18.209 15 16 15H8C5.791 15 4 16.791 4 19V21M16 7C16 9.209 14.209 11 12 11C9.791 11 8 9.209 8 7C8 4.791 9.791 3 12 3C14.209 3 16 4.791 16 7Z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <!-- Search icon -->
+            <svg *ngIf="step.icon === 'search'" viewBox="0 0 24 24" fill="none">
+              <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <!-- Video icon -->
+            <svg *ngIf="step.icon === 'video'" viewBox="0 0 24 24" fill="none">
+              <path d="M15 10L19.553 7.724C19.805 7.598 20 7.749 20 8.032V15.968C20 16.251 19.805 16.402 19.553 16.276L15 14M4 8H15C15.552 8 16 8.448 16 9V15C16 15.552 15.552 16 15 16H4C3.448 16 3 15.552 3 15V9C3 8.448 3.448 8 4 8Z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <h3 class="hiw-step__title">{{ step.title }}</h3>
+          <p class="hiw-step__description">{{ step.description }}</p>
+        </div>
+
+        <!-- Connector arrow (between steps) -->
+        <div class="hiw-step__connector" *ngIf="!last">
+          <svg viewBox="0 0 48 24" fill="none">
+            <path d="M0 12H40M34 6L40 12L34 18" stroke="#4A90A4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="how-it-works__cta">
+      <p>Ready to begin your journey?</p>
+      <a routerLink="/auth/register" class="how-it-works__btn">Start Today — It's Free</a>
+    </div>
+
+  </div>
+</section>

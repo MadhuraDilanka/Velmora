@@ -1,0 +1,71 @@
+<section class="counsellors" id="counsellors">
+  <div class="counsellors__container">
+
+    <div class="counsellors__header">
+      <span class="counsellors__label">Our Counsellors</span>
+      <h2 class="counsellors__title">Meet your support team</h2>
+      <p class="counsellors__subtitle">
+        Browse our network of verified, compassionate professionals ready to guide you.
+      </p>
+    </div>
+
+    <div class="counsellors__grid">
+      <div class="counsellor-card" *ngFor="let counsellor of counsellors">
+
+        <div class="counsellor-card__top">
+          <div class="counsellor-card__avatar-wrap">
+            <img [src]="counsellor.imageUrl" [alt]="counsellor.name" class="counsellor-card__avatar"/>
+            <span
+              class="counsellor-card__status"
+              [class.counsellor-card__status--available]="counsellor.available"
+              [class.counsellor-card__status--busy]="!counsellor.available"
+            ></span>
+          </div>
+          <div class="counsellor-card__info">
+            <h3 class="counsellor-card__name">{{ counsellor.name }}</h3>
+            <span class="counsellor-card__title-text">{{ counsellor.title }}</span>
+          </div>
+        </div>
+
+        <div class="counsellor-card__tags">
+          <span class="counsellor-card__tag" *ngFor="let s of counsellor.specialties">{{ s }}</span>
+        </div>
+
+        <div class="counsellor-card__stats">
+          <div class="counsellor-card__rating">
+            <span class="counsellor-card__stars">★</span>
+            <span class="counsellor-card__rating-val">{{ counsellor.rating }}</span>
+            <span class="counsellor-card__reviews">({{ counsellor.reviews }} reviews)</span>
+          </div>
+          <div class="counsellor-card__sessions">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M17 21V19C17 16.791 15.209 15 13 15H5C2.791 15 1 16.791 1 19V21M23 21V19C22.999 17.175 21.765 15.57 20 15.13M16 3.13C17.769 3.571 19.004 5.178 19.004 7.005C19.004 8.832 17.769 10.439 16 10.88M13 7C13 9.209 11.209 11 9 11C6.791 11 5 9.209 5 7C5 4.791 6.791 3 9 3C11.209 3 13 4.791 13 7Z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ counsellor.sessions }}+ sessions
+          </div>
+        </div>
+
+        <div class="counsellor-card__availability">
+          <span [class.available]="counsellor.available" [class.busy]="!counsellor.available">
+            <span class="dot"></span>
+            {{ counsellor.available ? 'Available Today' : 'Next Available Tomorrow' }}
+          </span>
+        </div>
+
+        <a routerLink="/auth/register" class="counsellor-card__btn">Book a Session</a>
+
+      </div>
+    </div>
+
+    <div class="counsellors__cta">
+      <a href="#" class="counsellors__view-all">
+        View All Counsellors
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M5 12H19M13 6L19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>

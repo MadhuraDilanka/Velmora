@@ -6,8 +6,7 @@ import { UserRole } from './modules/auth/models/auth.model';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth/login',
-    pathMatch: 'full'
+    loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
   },
   {
     path: 'auth',
@@ -35,8 +34,8 @@ const routes: Routes = [
     path: 'unauthorized',
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
-  // Wildcard — redirect unknown paths to login
-  { path: '**', redirectTo: 'auth/login' }
+  // Wildcard — redirect unknown paths to home
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
