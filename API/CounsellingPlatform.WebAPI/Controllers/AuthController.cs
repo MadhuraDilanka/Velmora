@@ -39,6 +39,16 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>Exchange a valid refresh token for a new access token + refresh token pair</summary>
+    [HttpPost("refresh")]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new RefreshTokenCommand(request.RefreshToken), cancellationToken);
+        return Ok(result);
+    }
+
     /// <summary>Revoke the current user's refresh token (logout)</summary>
     [HttpPost("revoke")]
     [Authorize]
@@ -56,4 +66,6 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 }
+
+public record RefreshTokenRequest(string RefreshToken);
 

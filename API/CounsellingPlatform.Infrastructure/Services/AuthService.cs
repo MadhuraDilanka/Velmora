@@ -77,10 +77,24 @@ public class AuthService : IAuthService
         return BuildAuthResponse(user, accessToken, refreshToken);
     }
 
-    public Task<AuthResponseDto> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<AuthResponseDto> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
-        // Refresh token storage will be implemented in a dedicated table in a future step
-        throw new NotImplementedException("Refresh token endpoint will be implemented in a future step.");
+        var users = await _userRepository.GetAllAsync(cancellationToken);
+        var user = users.FirstOrDefault(u => u.RefreshToken == refreshToken);
+
+        if (user is null || user.RefreshTokenExpiry < DateTime.UtcNow)
+            throw new UnauthorizedException("Refresh token is invalid or expired.");
+
+        var newAccessToken = _tokenService.GenerateAccessToken(user);
+        var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshToken = newRefreshToken;
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+        await _userRepository.UpdateAsync(user, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return BuildAuthResponse(user, newAccessToken, newRefreshToken);
     }
 
     public async Task RevokeTokenAsync(Guid userId, CancellationToken cancellationToken = default)
