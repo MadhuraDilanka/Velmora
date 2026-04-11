@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AdminService } from '../../../../core/services/admin.service';
+import { CounsellorService } from '../../../../core/services/counsellor.service';
+import { AdminStats } from '../../../../core/models/admin-stats.model';
 
 interface StatCard {
   label: string;
@@ -20,7 +23,7 @@ interface ActivityRow {
 }
 
 interface PendingApproval {
-  id: number;
+  id: string;
   name: string;
   specialty: string;
   appliedDate: string;
@@ -35,15 +38,12 @@ interface PendingApproval {
   styleUrls: ['./dashboard.component.scss'],
   templateUrl: './dashboard.component.html',
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
   today = new Date();
+  isLoadingStats = true;
+  isLoadingPending = true;
 
-  stats: StatCard[] = [
-    { label: 'Total Users',        value: '1,248', trend: '+12% this month',   trendUp: true,  color: '#4A90A4', bgColor: 'rgba(74,144,164,0.10)', icon: 'users'     },
-    { label: 'Active Counsellors', value: '86',    trend: '+3 this week',      trendUp: true,  color: '#38a169', bgColor: 'rgba(56,161,105,0.10)',  icon: 'counsellor'},
-    { label: 'Pending Approvals',  value: '7',     trend: 'Needs review',      trendUp: false, color: '#dd6b20', bgColor: 'rgba(221,107,32,0.10)',  icon: 'clock'     },
-    { label: 'Sessions This Week', value: '342',   trend: '+8% vs last week',  trendUp: true,  color: '#805ad5', bgColor: 'rgba(128,90,213,0.10)', icon: 'calendar'  },
-  ];
+  stats: StatCard[] = [];
 
   recentActivity: ActivityRow[] = [
     { user: 'Sarah Mitchell',  action: 'Registered as a new client',           date: '2 min ago',   status: 'active'    },
@@ -54,26 +54,64 @@ export class AdminDashboardComponent {
     { user: 'Lucas Fernandez', action: 'Registered as a new client',            date: '5 hours ago', status: 'active'    },
   ];
 
-  pendingApprovals: PendingApproval[] = [
-    { id: 1, name: 'James Okoroh',     specialty: 'Anxiety & Stress',       appliedDate: 'Jan 18, 2025', experience: '5 years',  status: 'pending' },
-    { id: 2, name: 'Amara Nwosu',      specialty: 'Couples Therapy',        appliedDate: 'Jan 17, 2025', experience: '8 years',  status: 'pending' },
-    { id: 3, name: 'Daniel Park',      specialty: 'Youth & Adolescents',    appliedDate: 'Jan 16, 2025', experience: '3 years',  status: 'pending' },
-    { id: 4, name: 'Fatima Al-Hassan', specialty: 'Grief & Trauma',         appliedDate: 'Jan 15, 2025', experience: '10 years', status: 'pending' },
-    { id: 5, name: 'Oliver Chen',      specialty: 'CBT & Depression',       appliedDate: 'Jan 14, 2025', experience: '6 years',  status: 'pending' },
-    { id: 6, name: 'Nkechi Adeyemi',   specialty: 'Mindfulness & Wellness', appliedDate: 'Jan 13, 2025', experience: '4 years',  status: 'pending' },
-    { id: 7, name: "Ryan O'Brien",     specialty: 'Addiction Recovery',     appliedDate: 'Jan 12, 2025', experience: '7 years',  status: 'pending' },
-  ];
+  pendingApprovals: PendingApproval[] = [];
+
+  constructor(
+    private adminService: AdminService,
+    private counsellorService: CounsellorService,
+  ) {}
+
+  ngOnInit(): void {
+    this.loadStats();
+    this.loadPendingApprovals();
+  }
+
+  private loadStats(): void {
+    this.adminService.getStats().subscribe({
+      next: (data: AdminStats) => {
+        this.stats = [
+          { label: 'Total Users',        value: data.totalUsers.toLocaleString(),       trend: `+${data.newUsersThisMonth} this month`, trendUp: data.newUsersThisMonth > 0, color: '#4A90A4', bgColor: 'rgba(74,144,164,0.10)', icon: 'users'      },
+          { label: 'Active Counsellors', value: data.activeCounsellors.toLocaleString(), trend: `${data.totalCounsellors} total`,         trendUp: true,                       color: '#38a169', bgColor: 'rgba(56,161,105,0.10)',  icon: 'counsellor' },
+          { label: 'Pending Approvals',  value: data.pendingApprovals.toLocaleString(),  trend: 'Needs review',                           trendUp: false,                      color: '#dd6b20', bgColor: 'rgba(221,107,32,0.10)',  icon: 'clock'      },
+          { label: 'Total Clients',      value: data.totalClients.toLocaleString(),      trend: `${data.newUsersThisMonth} new this month`, trendUp: true,                      color: '#805ad5', bgColor: 'rgba(128,90,213,0.10)', icon: 'calendar'   },
+        ];
+        this.isLoadingStats = false;
+      },
+      error: () => { this.isLoadingStats = false; },
+    });
+  }
+
+  private loadPendingApprovals(): void {
+    this.counsellorService.getPendingCounsellors().subscribe({
+      next: (counsellors) => {
+        this.pendingApprovals = counsellors.map(c => ({
+          id: c.id,
+          name: c.fullName,
+          specialty: c.specializations ?? '—',
+          appliedDate: '—',
+          experience: `${c.yearsOfExperience} yr${c.yearsOfExperience !== 1 ? 's' : ''}`,
+          status: 'pending' as const,
+        }));
+        this.isLoadingPending = false;
+      },
+      error: () => { this.isLoadingPending = false; },
+    });
+  }
 
   get pendingCount(): number {
     return this.pendingApprovals.filter(a => a.status === 'pending').length;
   }
 
   approve(approval: PendingApproval): void {
-    approval.status = 'approved';
+    this.counsellorService.approveCounsellor(approval.id).subscribe({
+      next: () => { approval.status = 'approved'; },
+    });
   }
 
   reject(approval: PendingApproval): void {
-    approval.status = 'rejected';
+    this.counsellorService.rejectCounsellor(approval.id).subscribe({
+      next: () => { approval.status = 'rejected'; },
+    });
   }
 
   getInitials(name: string): string {

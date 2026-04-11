@@ -1,46 +1,84 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CounsellorService } from '../../../../core/services/counsellor.service';
 
 @Component({
   selector: 'app-counsellor-profile-management',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div class="page-header">
       <h2>Profile Management</h2>
       <p>Update your professional profile visible to clients.</p>
     </div>
 
-    <div class="card">
+    <div *ngIf="isLoading" class="card loading-card">
+      <div *ngFor="let i of [1,2,3,4]" class="sk-field"></div>
+    </div>
+
+    <div *ngIf="!isLoading" class="card">
       <h3 class="card-title">Professional Information</h3>
-      <form [formGroup]="form" class="profile-form">
-        <div class="form-group">
-          <label>Display Name</label>
-          <input type="text" formControlName="displayName" placeholder="Dr. Jane Smith" />
-        </div>
+
+      <div *ngIf="successMsg" class="alert alert--success">{{ successMsg }}</div>
+      <div *ngIf="errorMsg"   class="alert alert--error">{{ errorMsg }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
         <div class="form-group">
           <label>Professional Title</label>
-          <input type="text" formControlName="title" placeholder="Licensed Clinical Psychologist" />
+          <input type="text" formControlName="professionalTitle" placeholder="Licensed Clinical Psychologist" />
         </div>
         <div class="form-group">
-          <label>Specializations</label>
-          <input type="text" formControlName="specializations" placeholder="Anxiety, Depression, Trauma..." />
+          <label>Specializations <span class="hint">(comma-separated)</span></label>
+          <input type="text" formControlName="specializations" placeholder="Anxiety, Depression, Trauma" />
         </div>
         <div class="form-group">
           <label>Bio</label>
           <textarea formControlName="bio" rows="5" placeholder="Tell clients about your background and approach..."></textarea>
         </div>
+        <div class="form-group">
+          <label>Qualifications <span class="hint">(comma-separated)</span></label>
+          <input type="text" formControlName="qualifications" placeholder="MSc Psychology, CBT Certified" />
+        </div>
+        <div class="form-group">
+          <label>Languages Spoken <span class="hint">(comma-separated)</span></label>
+          <input type="text" formControlName="languages" placeholder="English, French" />
+        </div>
         <div class="form-row">
           <div class="form-group">
             <label>Years of Experience</label>
-            <input type="number" formControlName="experience" placeholder="5" />
+            <input type="number" formControlName="yearsOfExperience" placeholder="5" min="0" />
           </div>
           <div class="form-group">
-            <label>Session Rate (USD)</label>
-            <input type="number" formControlName="rate" placeholder="80" />
+            <label>Session Fee (USD)</label>
+            <input type="number" formControlName="sessionFee" placeholder="80" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Session Duration (min)</label>
+            <input type="number" formControlName="sessionDurationMinutes" placeholder="50" min="15" />
           </div>
         </div>
-        <button type="submit" class="save-btn">Save Profile</button>
+        <div class="form-row">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="isAvailableOnline" />
+            Available Online
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="isAvailableInPerson" />
+            Available In-Person
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="isAvailable" />
+            Currently Accepting Clients
+          </label>
+        </div>
+        <div class="form-group">
+          <label>LinkedIn URL</label>
+          <input type="url" formControlName="linkedInUrl" placeholder="https://linkedin.com/in/your-profile" />
+        </div>
+        <button type="submit" class="save-btn" [disabled]="isSaving">
+          {{ isSaving ? 'Saving…' : 'Save Profile' }}
+        </button>
       </form>
     </div>
   `,
@@ -49,28 +87,98 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
       h2 { font-size: 26px; font-weight: 700; color: #1a2e3b; margin: 0 0 6px; }
       p  { font-size: 14px; color: #718096; margin: 0; }
     }
-    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; max-width: 700px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; max-width: 760px; }
     .card-title { font-size: 18px; font-weight: 700; color: #1a2e3b; margin: 0 0 24px; }
+    .hint { font-size: 12px; font-weight: 400; color: #718096; margin-left: 4px; }
     .profile-form { display: flex; flex-direction: column; gap: 18px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: end; }
     .form-group { display: flex; flex-direction: column; gap: 6px;
       label { font-size: 13px; font-weight: 600; color: #1a2e3b; }
       input, textarea { padding: 11px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; resize: vertical; transition: border-color 0.2s; &:focus { border-color: #4A90A4; } }
     }
-    .save-btn { align-self: flex-start; padding: 11px 28px; border: none; border-radius: 100px; background: #4A90A4; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; &:hover { background: #357a8e; } }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #2d3748; cursor: pointer;
+      input[type="checkbox"] { width: 16px; height: 16px; accent-color: #4A90A4; cursor: pointer; }
+    }
+    .save-btn { align-self: flex-start; padding: 11px 28px; border: none; border-radius: 100px; background: #4A90A4; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+      &:hover:not(:disabled) { background: #357a8e; }
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
+    }
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; margin-bottom: 4px;
+      &--success { background: rgba(56,161,105,0.1); color: #276749; }
+      &--error   { background: rgba(229,62,62,0.1); color: #c53030; }
+    }
+    /* Loading skeleton */
+    .loading-card { padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+    .sk-field { height: 48px; background: #e2e8f0; border-radius: 10px; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
   `]
 })
-export class CounsellorProfileManagementComponent {
+export class CounsellorProfileManagementComponent implements OnInit {
   form: FormGroup;
-  constructor(private fb: FormBuilder) {
+  isLoading = true;
+  isSaving = false;
+  successMsg = '';
+  errorMsg = '';
+
+  constructor(
+    private fb: FormBuilder,
+    private counsellorService: CounsellorService,
+  ) {
     this.form = this.fb.group({
-      displayName:     ['', Validators.required],
-      title:           ['', Validators.required],
-      specializations: [''],
-      bio:             [''],
-      experience:      [null],
-      rate:            [null],
+      professionalTitle:      [''],
+      specializations:        [''],
+      bio:                    [''],
+      qualifications:         [''],
+      languages:              [''],
+      yearsOfExperience:      [0, [Validators.min(0)]],
+      sessionFee:             [0, [Validators.required, Validators.min(0)]],
+      sessionDurationMinutes: [50, [Validators.required, Validators.min(15)]],
+      isAvailableOnline:      [false],
+      isAvailableInPerson:    [false],
+      isAvailable:            [true],
+      linkedInUrl:            [''],
+    });
+  }
+
+  ngOnInit(): void {
+    this.counsellorService.getMyProfile().subscribe({
+      next: (profile) => {
+        this.form.patchValue({
+          professionalTitle:      profile.professionalTitle ?? '',
+          specializations:        profile.specializations ?? '',
+          bio:                    profile.bio ?? '',
+          qualifications:         profile.qualifications ?? '',
+          languages:              profile.languages ?? '',
+          yearsOfExperience:      profile.yearsOfExperience,
+          sessionFee:             profile.sessionFee,
+          sessionDurationMinutes: profile.sessionDurationMinutes,
+          isAvailableOnline:      profile.isAvailableOnline,
+          isAvailableInPerson:    profile.isAvailableInPerson,
+          isAvailable:            profile.isAvailable,
+          linkedInUrl:            profile.linkedInUrl ?? '',
+        });
+        this.isLoading = false;
+      },
+      error: () => { this.isLoading = false; },
+    });
+  }
+
+  save(): void {
+    if (this.form.invalid) return;
+    this.isSaving = true;
+    this.successMsg = '';
+    this.errorMsg = '';
+
+    this.counsellorService.upsertMyProfile(this.form.value).subscribe({
+      next: () => {
+        this.successMsg = 'Profile saved successfully.';
+        this.isSaving = false;
+      },
+      error: () => {
+        this.errorMsg = 'Failed to save profile. Please try again.';
+        this.isSaving = false;
+      },
     });
   }
 }
