@@ -9,6 +9,7 @@ export interface UserDto {
   fullName: string;
   email: string;
   role: UserRole;
+  profilePictureUrl?: string;
 }
 
 export interface AuthResponse {

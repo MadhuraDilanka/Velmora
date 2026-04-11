@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CounsellorService } from '../../../../core/services/counsellor.service';
 import { CounsellorProfile } from '../../../../core/models/counsellor.model';
+import { AvatarUrlPipe } from '../../../../shared/pipes/avatar-url.pipe';
 
 const SPECIALTIES = ['Anxiety', 'Depression', 'Relationships', 'Trauma', 'Career', 'Grief', 'Stress', 'Addiction'];
 
 @Component({
   selector: 'app-counsellors-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AvatarUrlPipe],
   template: `
     <section class="page-hero">
       <div class="container">
@@ -49,7 +50,7 @@ const SPECIALTIES = ['Anxiety', 'Depression', 'Relationships', 'Trauma', 'Career
           <div *ngFor="let c of filtered" class="counsellor-card">
             <div class="counsellor-card__top">
               <div class="counsellor-card__avatar" [style.background]="avatarColor(c.fullName)">
-                <img *ngIf="c.profileImageUrl" [src]="c.profileImageUrl" [alt]="c.fullName" class="avatar-img" />
+                <img *ngIf="c.profileImageUrl" [src]="c.profileImageUrl | avatarUrl" [alt]="c.fullName" class="avatar-img" />
                 <span *ngIf="!c.profileImageUrl">{{ initials(c.fullName) }}</span>
               </div>
               <div *ngIf="c.isVerified" class="verified-badge" title="Verified Counsellor">✓</div>

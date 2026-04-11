@@ -2,23 +2,44 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CounsellorService } from '../../../../core/services/counsellor.service';
+import { AvatarUploadComponent } from '../../../../shared/components/avatar-upload/avatar-upload.component';
+import { CounsellorProfile } from '../../../../core/models/counsellor.model';
 
 @Component({
   selector: 'app-counsellor-profile-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AvatarUploadComponent],
   template: `
     <div class="page-header">
       <h2>Profile Management</h2>
       <p>Update your professional profile visible to clients.</p>
     </div>
 
-    <div *ngIf="isLoading" class="card loading-card">
-      <div *ngFor="let i of [1,2,3,4]" class="sk-field"></div>
+    <div *ngIf="isLoading" class="content-grid">
+      <div class="card profile-card skeleton">
+        <div class="sk-avatar"></div>
+        <div class="sk-line w60"></div>
+        <div class="sk-line w40"></div>
+      </div>
+      <div class="card loading-card">
+        <div *ngFor="let i of [1,2,3,4]" class="sk-field"></div>
+      </div>
     </div>
 
-    <div *ngIf="!isLoading" class="card">
-      <h3 class="card-title">Professional Information</h3>
+    <div *ngIf="!isLoading" class="content-grid">
+      <!-- Left: avatar card -->
+      <div class="card profile-card">
+        <app-avatar-upload
+          [avatarUrl]="profile?.profileImageUrl"
+          [displayName]="profile?.fullName ?? 'Counsellor'"
+          roleName="Counsellor"
+          (uploaded)="onAvatarUploaded($event)">
+        </app-avatar-upload>
+      </div>
+
+      <!-- Right: form -->
+      <div class="card form-card">
+        <h3 class="card-title">Professional Information</h3>
 
       <div *ngIf="successMsg" class="alert alert--success">{{ successMsg }}</div>
       <div *ngIf="errorMsg"   class="alert alert--error">{{ errorMsg }}</div>
@@ -81,13 +102,17 @@ import { CounsellorService } from '../../../../core/services/counsellor.service'
         </button>
       </form>
     </div>
+    </div>
   `,
   styles: [`
     .page-header { margin-bottom: 24px;
       h2 { font-size: 26px; font-weight: 700; color: #1a2e3b; margin: 0 0 6px; }
       p  { font-size: 14px; color: #718096; margin: 0; }
     }
-    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; max-width: 760px; }
+    .content-grid { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+    .profile-card { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; }
+    .form-card { }
     .card-title { font-size: 18px; font-weight: 700; color: #1a2e3b; margin: 0 0 24px; }
     .hint { font-size: 12px; font-weight: 400; color: #718096; margin-left: 4px; }
     .profile-form { display: flex; flex-direction: column; gap: 18px; }
@@ -109,9 +134,11 @@ import { CounsellorService } from '../../../../core/services/counsellor.service'
     }
     /* Loading skeleton */
     .loading-card { padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+    .sk-avatar { width: 80px; height: 80px; border-radius: 50%; background: #e2e8f0; animation: shimmer 1.5s infinite; }
+    .sk-line { height: 14px; background: #e2e8f0; border-radius: 6px; margin-bottom: 8px; animation: shimmer 1.5s infinite; &.w60 { width: 60%; } &.w40 { width: 40%; } }
     .sk-field { height: 48px; background: #e2e8f0; border-radius: 10px; animation: shimmer 1.5s infinite; }
     @keyframes shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .content-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
   `]
 })
 export class CounsellorProfileManagementComponent implements OnInit {
@@ -120,6 +147,7 @@ export class CounsellorProfileManagementComponent implements OnInit {
   isSaving = false;
   successMsg = '';
   errorMsg = '';
+  profile: CounsellorProfile | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -143,20 +171,21 @@ export class CounsellorProfileManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.counsellorService.getMyProfile().subscribe({
-      next: (profile) => {
+      next: (p) => {
+        this.profile = p;
         this.form.patchValue({
-          professionalTitle:      profile.professionalTitle ?? '',
-          specializations:        profile.specializations ?? '',
-          bio:                    profile.bio ?? '',
-          qualifications:         profile.qualifications ?? '',
-          languages:              profile.languages ?? '',
-          yearsOfExperience:      profile.yearsOfExperience,
-          sessionFee:             profile.sessionFee,
-          sessionDurationMinutes: profile.sessionDurationMinutes,
-          isAvailableOnline:      profile.isAvailableOnline,
-          isAvailableInPerson:    profile.isAvailableInPerson,
-          isAvailable:            profile.isAvailable,
-          linkedInUrl:            profile.linkedInUrl ?? '',
+          professionalTitle:      p.professionalTitle ?? '',
+          specializations:        p.specializations ?? '',
+          bio:                    p.bio ?? '',
+          qualifications:         p.qualifications ?? '',
+          languages:              p.languages ?? '',
+          yearsOfExperience:      p.yearsOfExperience,
+          sessionFee:             p.sessionFee,
+          sessionDurationMinutes: p.sessionDurationMinutes,
+          isAvailableOnline:      p.isAvailableOnline,
+          isAvailableInPerson:    p.isAvailableInPerson,
+          isAvailable:            p.isAvailable,
+          linkedInUrl:            p.linkedInUrl ?? '',
         });
         this.isLoading = false;
       },
@@ -180,5 +209,9 @@ export class CounsellorProfileManagementComponent implements OnInit {
         this.isSaving = false;
       },
     });
+  }
+
+  onAvatarUploaded(url: string): void {
+    if (this.profile) this.profile = { ...this.profile, profileImageUrl: url };
   }
 }

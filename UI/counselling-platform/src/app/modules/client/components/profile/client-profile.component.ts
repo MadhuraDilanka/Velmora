@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClientService } from '../../../../core/services/client.service';
 import { ClientProfile } from '../../../../core/models/client-profile.model';
+import { AvatarUploadComponent } from '../../../../shared/components/avatar-upload/avatar-upload.component';
 
 @Component({
   selector: 'app-client-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AvatarUploadComponent],
   template: `
     <div class="page-header">
       <h2>My Profile</h2>
@@ -19,8 +20,7 @@ import { ClientProfile } from '../../../../core/models/client-profile.model';
         <div class="sk-avatar"></div>
         <div class="sk-line w60"></div>
         <div class="sk-line w40"></div>
-      </div>
-      <div class="card loading-card">
+      </div>      <div class="card loading-card">
         <div *ngFor="let i of [1,2,3,4]" class="sk-field"></div>
       </div>
     </div>
@@ -28,11 +28,12 @@ import { ClientProfile } from '../../../../core/models/client-profile.model';
     <div *ngIf="!isLoading" class="content-grid">
       <!-- Left: avatar card -->
       <div class="card profile-card">
-        <div class="profile-avatar" [style.background]="avatarColor(profile?.fullName ?? 'C')">
-          {{ initials(profile?.fullName ?? 'Client') }}
-        </div>
-        <h3>{{ profile?.fullName ?? 'Your Name' }}</h3>
-        <span class="role-badge">Client</span>
+        <app-avatar-upload
+          [avatarUrl]="profile?.profileImageUrl"
+          [displayName]="profile?.fullName ?? 'Client'"
+          roleName="Client"
+          (uploaded)="onAvatarUploaded($event)">
+        </app-avatar-upload>
       </div>
 
       <!-- Right: form -->
@@ -236,6 +237,10 @@ export class ClientProfileComponent implements OnInit {
         this.isSaving = false;
       },
     });
+  }
+
+  onAvatarUploaded(url: string): void {
+    if (this.profile) this.profile = { ...this.profile, profileImageUrl: url };
   }
 
   initials(name: string): string {

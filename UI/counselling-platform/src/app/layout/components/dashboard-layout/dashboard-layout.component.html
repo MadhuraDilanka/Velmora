@@ -118,7 +118,16 @@
 
       <!-- User -->
       <div class="topbar__user" *ngIf="currentUser">
-        <div class="topbar__avatar">{{ currentUser.fullName.charAt(0) }}</div>
+        <div class="topbar__avatar">
+          <img *ngIf="currentUser.profilePictureUrl"
+               [src]="currentUser.profilePictureUrl | avatarUrl"
+               class="topbar__avatar-img"
+               alt=""
+               (error)="topbarImgError = true" />
+          <span *ngIf="!currentUser.profilePictureUrl || topbarImgError">
+            {{ currentUser.fullName.charAt(0) }}
+          </span>
+        </div>
         <div class="topbar__info">
           <span class="topbar__name">{{ currentUser.fullName }}</span>
           <span class="topbar__role">{{ roleLabel }}</span>

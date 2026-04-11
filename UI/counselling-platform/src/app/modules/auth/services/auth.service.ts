@@ -52,6 +52,14 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  updateCurrentUserAvatar(avatarUrl: string): void {
+    const user = this.currentUserSubject.value;
+    if (!user) return;
+    const updated = { ...user, profilePictureUrl: avatarUrl };
+    localStorage.setItem('currentUser', JSON.stringify(updated));
+    this.currentUserSubject.next(updated);
+  }
+
   private handleAuthSuccess(response: AuthResponse): void {
     localStorage.setItem('accessToken', response.accessToken);
     localStorage.setItem('refreshToken', response.refreshToken);

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../modules/auth/services/auth.service';
 import { UserDto, UserRole } from '../../../modules/auth/models/auth.model';
+import { AvatarUrlPipe } from '../../../shared/pipes/avatar-url.pipe';
 
 interface NavLink {
   label: string;
@@ -15,7 +16,7 @@ interface NavLink {
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, AvatarUrlPipe],
   templateUrl: './dashboard-layout.component.html',
   styleUrls: ['./dashboard-layout.component.scss']
 })
@@ -25,6 +26,7 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
   notificationsOpen = false;
   notificationCount = 3;
+  topbarImgError = false;
   private destroy$ = new Subject<void>();
 
   readonly clientLinks: NavLink[] = [
@@ -60,7 +62,8 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
-        this.currentUser = user;
+        this.currentUser   = user;
+        this.topbarImgError = false;
         this.navLinks = this.getLinksForRole(user?.role);
       });
   }

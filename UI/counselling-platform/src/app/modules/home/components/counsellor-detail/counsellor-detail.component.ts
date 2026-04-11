@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CounsellorService } from '../../../../core/services/counsellor.service';
 import { CounsellorProfile } from '../../../../core/models/counsellor.model';
+import { AvatarUrlPipe } from '../../../../shared/pipes/avatar-url.pipe';
 
 @Component({
   selector: 'app-counsellor-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AvatarUrlPipe],
   template: `
     <section class="detail-page">
       <div class="container">
@@ -35,7 +36,7 @@ import { CounsellorProfile } from '../../../../core/models/counsellor.model';
           <div class="profile-card">
             <div class="profile-card__avatar-wrap">
               <div class="profile-card__avatar" [style.background]="avatarColor(counsellor.fullName)">
-                <img *ngIf="counsellor.profileImageUrl" [src]="counsellor.profileImageUrl" [alt]="counsellor.fullName" class="avatar-img" />
+                <img *ngIf="counsellor.profileImageUrl" [src]="counsellor.profileImageUrl | avatarUrl" [alt]="counsellor.fullName" class="avatar-img" />
                 <span *ngIf="!counsellor.profileImageUrl">{{ initials(counsellor.fullName) }}</span>
               </div>
               <div *ngIf="counsellor.isVerified" class="verified-badge" title="Verified">✓ Verified</div>
