@@ -6,9 +6,17 @@ import { AuthService } from '../../services/auth.service';
 import { UserRole } from '../../models/auth.model';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-  const pw = control.get('password')?.value;
-  const confirm = control.get('confirmPassword')?.value;
-  return pw && confirm && pw !== confirm ? { passwordMismatch: true } : null;
+  const pw      = control.get('password');
+  const confirm = control.get('confirmPassword');
+  if (!pw || !confirm) return null;
+  const mismatch = pw.value && confirm.value && pw.value !== confirm.value;
+  if (mismatch) {
+    confirm.setErrors({ ...(confirm.errors ?? {}), passwordMismatch: true });
+  } else if (confirm.errors?.['passwordMismatch']) {
+    const { passwordMismatch, ...rest } = confirm.errors;
+    confirm.setErrors(Object.keys(rest).length ? rest : null);
+  }
+  return null;
 }
 
 @Component({
@@ -470,7 +478,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
             </div>
 
             <!-- Confirm Password -->
-            <div class="field" [class.field--error]="(f['confirmPassword'].invalid || registerForm.errors?.['passwordMismatch']) && f['confirmPassword'].touched">
+            <div class="field" [class.field--error]="f['confirmPassword'].invalid && f['confirmPassword'].touched">
               <label class="label" for="reg-confirm">Confirm password</label>
               <div class="input-wrap">
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -487,7 +495,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
                 />
               </div>
               <span class="field-error" *ngIf="f['confirmPassword'].errors?.['required'] && f['confirmPassword'].touched">Please confirm your password.</span>
-              <span class="field-error" *ngIf="registerForm.errors?.['passwordMismatch'] && f['confirmPassword'].touched">Passwords do not match.</span>
+              <span class="field-error" *ngIf="f['confirmPassword'].errors?.['passwordMismatch'] && f['confirmPassword'].touched">Passwords do not match.</span>
             </div>
 
             <!-- API error -->
@@ -574,8 +582,7 @@ export class RegisterComponent {
     }
     this.isLoading = true;
     this.errorMessage = '';
-    const { confirmPassword, ...payload } = this.registerForm.value;
-    this.authService.register(payload).subscribe({
+    this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
         const role = response.user.role;
         if (role === UserRole.Client) this.router.navigate(['/client']);
