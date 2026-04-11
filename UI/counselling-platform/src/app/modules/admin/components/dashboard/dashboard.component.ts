@@ -1,187 +1,90 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../auth/services/auth.service';
-import { Router } from '@angular/router';
+
+interface StatCard {
+  label: string;
+  value: string;
+  trend: string;
+  trendUp: boolean;
+  color: string;
+  bgColor: string;
+  icon: string;
+}
+
+interface ActivityRow {
+  user: string;
+  action: string;
+  date: string;
+  status: 'active' | 'pending' | 'completed' | 'cancelled';
+}
+
+interface PendingApproval {
+  id: number;
+  name: string;
+  specialty: string;
+  appliedDate: string;
+  experience: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  styles: [`
-    :host { display: block; min-height: 100vh; background: #f1f5f9; }
-
-    .topbar {
-      background: #fff;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 0 32px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .brand { font-size: 1.25rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; }
-    .brand span { color: #dc2626; }
-    .user-area { display: flex; align-items: center; gap: 12px; }
-    .role-badge {
-      background: #fef2f2;
-      color: #dc2626;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .btn-logout {
-      background: none;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 7px 16px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #64748b;
-      cursor: pointer;
-      font-family: inherit;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .btn-logout:hover { border-color: #dc2626; color: #dc2626; }
-
-    .page { padding: 40px 32px; max-width: 1200px; margin: 0 auto; }
-    .page-title { font-size: 1.75rem; font-weight: 800; color: #0f172a; letter-spacing: -0.03em; margin: 0 0 6px; }
-    .page-sub { color: #64748b; font-size: 0.9375rem; margin: 0 0 36px; }
-
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 36px; }
-    @media(max-width: 900px) { .stats { grid-template-columns: 1fr 1fr; } }
-    @media(max-width: 500px) { .stats { grid-template-columns: 1fr; } .page { padding: 24px 16px; } }
-
-    .stat-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 4px rgba(15,23,42,0.06);
-    }
-    .stat-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
-      margin-bottom: 14px;
-    }
-    .stat-value { font-size: 2rem; font-weight: 800; color: #0f172a; letter-spacing: -0.04em; }
-    .stat-label { font-size: 0.875rem; color: #64748b; margin-top: 2px; }
-
-    .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    @media(max-width: 600px) { .quick-actions { grid-template-columns: 1fr; } }
-
-    .action-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 28px 24px;
-      box-shadow: 0 1px 4px rgba(15,23,42,0.06);
-      text-decoration: none;
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      transition: box-shadow 0.15s, transform 0.1s;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-      text-align: left;
-    }
-    .action-card:hover { box-shadow: 0 4px 16px rgba(15,23,42,0.1); transform: translateY(-2px); }
-    .action-icon { font-size: 1.75rem; flex-shrink: 0; }
-    .action-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin: 0 0 4px; }
-    .action-desc { font-size: 0.875rem; color: #64748b; margin: 0; }
-
-    .coming-soon {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: #f0fdf4;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
-      border-radius: 20px;
-      padding: 2px 8px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-  `],
-  template: `
-    <nav class="topbar">
-      <div class="brand">Velmora <span>Admin</span></div>
-      <div class="user-area">
-        <span class="role-badge">Admin</span>
-        <button class="btn-logout" (click)="logout()">Sign out</button>
-      </div>
-    </nav>
-
-    <section class="page">
-      <h1 class="page-title">Admin Dashboard</h1>
-      <p class="page-sub">Platform overview and management tools</p>
-
-      <div class="stats">
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#eff6ff">👥</div>
-          <div class="stat-value">—</div>
-          <div class="stat-label">Total Users</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#f0fdf4">🧑‍⚕️</div>
-          <div class="stat-value">—</div>
-          <div class="stat-label">Counsellors</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#fffbeb">⏳</div>
-          <div class="stat-value">—</div>
-          <div class="stat-label">Pending Approvals</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#fdf4ff">📅</div>
-          <div class="stat-value">—</div>
-          <div class="stat-label">Sessions Today</div>
-        </div>
-      </div>
-
-      <div class="quick-actions">
-        <div class="action-card">
-          <span class="action-icon">✅</span>
-          <div>
-            <p class="action-title">Approve Counsellors <span class="coming-soon">Coming soon</span></p>
-            <p class="action-desc">Review and approve pending counsellor applications.</p>
-          </div>
-        </div>
-        <div class="action-card">
-          <span class="action-icon">👤</span>
-          <div>
-            <p class="action-title">Manage Users <span class="coming-soon">Coming soon</span></p>
-            <p class="action-desc">View, activate, or deactivate platform accounts.</p>
-          </div>
-        </div>
-        <div class="action-card">
-          <span class="action-icon">📊</span>
-          <div>
-            <p class="action-title">Reports &amp; Analytics <span class="coming-soon">Coming soon</span></p>
-            <p class="action-desc">Session stats, revenue tracking, and engagement metrics.</p>
-          </div>
-        </div>
-        <div class="action-card">
-          <span class="action-icon">⚙️</span>
-          <div>
-            <p class="action-title">Platform Settings <span class="coming-soon">Coming soon</span></p>
-            <p class="action-desc">Configure fees, categories, and notification templates.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  `
+  styleUrls: ['./dashboard.component.scss'],
+  templateUrl: './dashboard.component.html',
 })
 export class AdminDashboardComponent {
-  constructor(private authService: AuthService, private router: Router) {}
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
+  today = new Date();
+
+  stats: StatCard[] = [
+    { label: 'Total Users',        value: '1,248', trend: '+12% this month',   trendUp: true,  color: '#4A90A4', bgColor: 'rgba(74,144,164,0.10)', icon: 'users'     },
+    { label: 'Active Counsellors', value: '86',    trend: '+3 this week',      trendUp: true,  color: '#38a169', bgColor: 'rgba(56,161,105,0.10)',  icon: 'counsellor'},
+    { label: 'Pending Approvals',  value: '7',     trend: 'Needs review',      trendUp: false, color: '#dd6b20', bgColor: 'rgba(221,107,32,0.10)',  icon: 'clock'     },
+    { label: 'Sessions This Week', value: '342',   trend: '+8% vs last week',  trendUp: true,  color: '#805ad5', bgColor: 'rgba(128,90,213,0.10)', icon: 'calendar'  },
+  ];
+
+  recentActivity: ActivityRow[] = [
+    { user: 'Sarah Mitchell',  action: 'Registered as a new client',           date: '2 min ago',   status: 'active'    },
+    { user: 'James Okoroh',    action: 'Counsellor application submitted',      date: '18 min ago',  status: 'pending'   },
+    { user: 'Priya Sharma',    action: 'Session completed with Dr. Williams',   date: '1 hour ago',  status: 'completed' },
+    { user: 'Tom Andersen',    action: 'Payment of $120 processed',             date: '2 hours ago', status: 'completed' },
+    { user: 'Chioma Eze',      action: 'Appointment cancelled',                 date: '3 hours ago', status: 'cancelled' },
+    { user: 'Lucas Fernandez', action: 'Registered as a new client',            date: '5 hours ago', status: 'active'    },
+  ];
+
+  pendingApprovals: PendingApproval[] = [
+    { id: 1, name: 'James Okoroh',     specialty: 'Anxiety & Stress',       appliedDate: 'Jan 18, 2025', experience: '5 years',  status: 'pending' },
+    { id: 2, name: 'Amara Nwosu',      specialty: 'Couples Therapy',        appliedDate: 'Jan 17, 2025', experience: '8 years',  status: 'pending' },
+    { id: 3, name: 'Daniel Park',      specialty: 'Youth & Adolescents',    appliedDate: 'Jan 16, 2025', experience: '3 years',  status: 'pending' },
+    { id: 4, name: 'Fatima Al-Hassan', specialty: 'Grief & Trauma',         appliedDate: 'Jan 15, 2025', experience: '10 years', status: 'pending' },
+    { id: 5, name: 'Oliver Chen',      specialty: 'CBT & Depression',       appliedDate: 'Jan 14, 2025', experience: '6 years',  status: 'pending' },
+    { id: 6, name: 'Nkechi Adeyemi',   specialty: 'Mindfulness & Wellness', appliedDate: 'Jan 13, 2025', experience: '4 years',  status: 'pending' },
+    { id: 7, name: "Ryan O'Brien",     specialty: 'Addiction Recovery',     appliedDate: 'Jan 12, 2025', experience: '7 years',  status: 'pending' },
+  ];
+
+  get pendingCount(): number {
+    return this.pendingApprovals.filter(a => a.status === 'pending').length;
+  }
+
+  approve(approval: PendingApproval): void {
+    approval.status = 'approved';
+  }
+
+  reject(approval: PendingApproval): void {
+    approval.status = 'rejected';
+  }
+
+  getInitials(name: string): string {
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  }
+
+  getAvatarColor(name: string): string {
+    const colors = ['#4A90A4', '#38a169', '#805ad5', '#dd6b20', '#e53e3e', '#d69e2e'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) { hash = name.charCodeAt(i) + ((hash << 5) - hash); }
+    return colors[Math.abs(hash) % colors.length];
   }
 }
+

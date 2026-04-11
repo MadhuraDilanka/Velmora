@@ -1,0 +1,137 @@
+<div class="admin-dash">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <h1 class="page-header__title">Good morning, Admin</h1>
+      <p class="page-header__date">{{ today | date:'EEEE, MMMM d, y' }}</p>
+    </div>
+    <a routerLink="/admin/approvals" class="page-header__cta">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+      Review Approvals
+    </a>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stats-grid">
+    <div
+      *ngFor="let stat of stats"
+      class="stat-card"
+      [style.--accent]="stat.color"
+      [style.--accent-bg]="stat.bgColor">
+      <div class="stat-card__icon">
+        <ng-container [ngSwitch]="stat.icon">
+          <svg *ngSwitchCase="'users'" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+          <svg *ngSwitchCase="'counsellor'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm0 2a7 7 0 00-7 7h2a5 5 0 0110 0h2a7 7 0 00-7-7z" clip-rule="evenodd"/><path d="M15 8a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1V9a1 1 0 011-1z"/></svg>
+          <svg *ngSwitchCase="'clock'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+          <svg *ngSwitchCase="'calendar'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+        </ng-container>
+      </div>
+      <div class="stat-card__body">
+        <div class="stat-card__value">{{ stat.value }}</div>
+        <div class="stat-card__label">{{ stat.label }}</div>
+        <div class="stat-card__trend" [class.stat-card__trend--up]="stat.trendUp" [class.stat-card__trend--warn]="!stat.trendUp">
+          <svg *ngIf="stat.trendUp" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12 7a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 11-2 0V9.414l-4.293 4.293a1 1 0 01-1.414 0L8 11.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0L11 11.586 14.586 8H13a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+          <svg *ngIf="!stat.trendUp" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          {{ stat.trend }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom sections -->
+  <div class="sections-grid">
+
+    <!-- Recent Activity -->
+    <div class="card">
+      <div class="card__header">
+        <h2 class="card__title">Recent Activity</h2>
+        <a routerLink="/admin/users" class="card__link">View all</a>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Action</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of recentActivity">
+              <td>
+                <div class="user-cell">
+                  <div class="user-cell__avatar" [style.background]="getAvatarColor(row.user)">
+                    {{ getInitials(row.user) }}
+                  </div>
+                  <span class="user-cell__name">{{ row.user }}</span>
+                </div>
+              </td>
+              <td class="td-action">{{ row.action }}</td>
+              <td class="td-date">{{ row.date }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'badge--active':    row.status === 'active',
+                  'badge--pending':   row.status === 'pending',
+                  'badge--completed': row.status === 'completed',
+                  'badge--cancelled': row.status === 'cancelled'
+                }">{{ row.status }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    <div class="card">
+      <div class="card__header">
+        <h2 class="card__title">
+          Pending Counsellor Approvals
+          <span class="card__badge">{{ pendingCount }}</span>
+        </h2>
+        <a routerLink="/admin/approvals" class="card__link">View all</a>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Specialty</th>
+              <th>Experience</th>
+              <th>Applied</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pendingApprovals" [class.row--approved]="item.status === 'approved'" [class.row--rejected]="item.status === 'rejected'">
+              <td>
+                <div class="user-cell">
+                  <div class="user-cell__avatar" [style.background]="getAvatarColor(item.name)">
+                    {{ getInitials(item.name) }}
+                  </div>
+                  <span class="user-cell__name">{{ item.name }}</span>
+                </div>
+              </td>
+              <td class="td-specialty">{{ item.specialty }}</td>
+              <td class="td-exp">{{ item.experience }}</td>
+              <td class="td-date">{{ item.appliedDate }}</td>
+              <td>
+                <div class="actions-cell" *ngIf="item.status === 'pending'">
+                  <button class="btn-approve" (click)="approve(item)">Approve</button>
+                  <button class="btn-reject"  (click)="reject(item)">Reject</button>
+                </div>
+                <span *ngIf="item.status !== 'pending'" class="badge" [ngClass]="{
+                  'badge--completed': item.status === 'approved',
+                  'badge--cancelled': item.status === 'rejected'
+                }">{{ item.status }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

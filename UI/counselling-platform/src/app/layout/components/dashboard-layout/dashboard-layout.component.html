@@ -1,0 +1,135 @@
+<div class="dashboard" [class.sidebar-open]="sidebarOpen">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <a routerLink="/" class="sidebar__logo">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="18" fill="#4A90A4" fill-opacity="0.15"/>
+          <path d="M10 13C10 11.343 11.343 10 13 10H23C24.657 10 26 11.343 26 13V20C26 21.657 24.657 23 23 23H20L16 26V23H13C11.343 23 10 21.657 10 20V13Z"
+                fill="#4A90A4"/>
+          <circle cx="14.5" cy="16.5" r="1.5" fill="white"/>
+          <circle cx="18" cy="16.5" r="1.5" fill="white"/>
+          <circle cx="21.5" cy="16.5" r="1.5" fill="white"/>
+        </svg>
+        <span>Vel<em>mora</em></span>
+      </a>
+    </div>
+
+    <nav class="sidebar__nav">
+      <ng-container *ngFor="let link of navLinks">
+        <div *ngIf="link.dividerBefore" class="sidebar__divider"></div>
+        <a
+          [routerLink]="link.route"
+          routerLinkActive="active"
+          class="sidebar__nav-item"
+          (click)="closeSidebar()">
+          <span class="sidebar__nav-icon">
+            <ng-container [ngSwitch]="link.icon">
+              <svg *ngSwitchCase="'grid'" viewBox="0 0 20 20" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zm6-8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/></svg>
+              <svg *ngSwitchCase="'user'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+              <svg *ngSwitchCase="'users'" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+              <svg *ngSwitchCase="'counsellor'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm0 2a7 7 0 00-7 7h2a5 5 0 0110 0h2a7 7 0 00-7-7z" clip-rule="evenodd"/><path d="M15 8a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1V9a1 1 0 011-1z"/></svg>
+              <svg *ngSwitchCase="'calendar'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+              <svg *ngSwitchCase="'clock'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+              <svg *ngSwitchCase="'message'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+              <svg *ngSwitchCase="'credit-card'" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>
+              <svg *ngSwitchCase="'check-circle'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <svg *ngSwitchCase="'star'" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg *ngSwitchCase="'settings'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+            </ng-container>
+          </span>
+          <span class="sidebar__nav-label">{{ link.label }}</span>
+        </a>
+      </ng-container>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="sidebar__logout" (click)="logout()">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+
+  <!-- Main area -->
+  <div class="dashboard__main">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="topbar__toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+
+      <div class="topbar__spacer"></div>
+
+      <!-- Notifications -->
+      <div class="topbar__notifications" *ngIf="currentUser">
+        <button class="topbar__notif-btn" (click)="toggleNotifications()" aria-label="Notifications">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a2 2 0 01-2-2h4a2 2 0 01-2 2z"/>
+          </svg>
+          <span class="topbar__notif-badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+        </button>
+
+        <div class="notif-dropdown" *ngIf="notificationsOpen">
+          <div class="notif-dropdown__header">
+            <span>Notifications</span>
+            <span class="notif-dropdown__count">{{ notificationCount }} new</span>
+          </div>
+          <div class="notif-item notif-item--unread">
+            <div class="notif-item__icon notif-item__icon--warning">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="notif-item__body">
+              <p>New counsellor application received</p>
+              <span>2 minutes ago</span>
+            </div>
+          </div>
+          <div class="notif-item notif-item--unread">
+            <div class="notif-item__icon notif-item__icon--info">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+            </div>
+            <div class="notif-item__body">
+              <p>5 new users registered today</p>
+              <span>1 hour ago</span>
+            </div>
+          </div>
+          <div class="notif-item notif-item--unread">
+            <div class="notif-item__icon notif-item__icon--success">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="notif-item__body">
+              <p>Payment of $240 processed</p>
+              <span>3 hours ago</span>
+            </div>
+          </div>
+          <div class="notif-dropdown__footer">
+            <a routerLink="/admin/dashboard">View all notifications</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- User -->
+      <div class="topbar__user" *ngIf="currentUser">
+        <div class="topbar__avatar">{{ currentUser.fullName.charAt(0) }}</div>
+        <div class="topbar__info">
+          <span class="topbar__name">{{ currentUser.fullName }}</span>
+          <span class="topbar__role">{{ roleLabel }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="dashboard__content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+</div>

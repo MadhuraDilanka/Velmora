@@ -6,7 +6,32 @@ const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'dashboard',
-    loadComponent: () => import('./components/dashboard/dashboard.component').then(c => c.CounsellorDashboardComponent)
+    loadComponent: () =>
+      import('./components/dashboard/dashboard.component').then(c => c.CounsellorDashboardComponent)
+  },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./components/profile-management/counsellor-profile-management.component')
+        .then(c => c.CounsellorProfileManagementComponent)
+  },
+  {
+    path: 'availability',
+    loadComponent: () =>
+      import('./components/availability/counsellor-availability.component')
+        .then(c => c.CounsellorAvailabilityComponent)
+  },
+  {
+    path: 'appointments',
+    loadComponent: () =>
+      import('./components/appointments/counsellor-appointments.component')
+        .then(c => c.CounsellorAppointmentsComponent)
+  },
+  {
+    path: 'messages',
+    loadComponent: () =>
+      import('./components/messages/counsellor-messages.component')
+        .then(c => c.CounsellorMessagesComponent)
   }
 ];
 

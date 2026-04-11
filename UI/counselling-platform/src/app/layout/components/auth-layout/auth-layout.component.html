@@ -1,0 +1,23 @@
+<div class="auth-layout">
+  <div class="auth-layout__brand">
+    <a routerLink="/" class="auth-layout__logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#4A90A4" fill-opacity="0.12"/>
+        <path d="M10 13C10 11.343 11.343 10 13 10H23C24.657 10 26 11.343 26 13V20C26 21.657 24.657 23 23 23H20L16 26V23H13C11.343 23 10 21.657 10 20V13Z"
+              fill="#4A90A4"/>
+        <circle cx="14.5" cy="16.5" r="1.5" fill="white"/>
+        <circle cx="18" cy="16.5" r="1.5" fill="white"/>
+        <circle cx="21.5" cy="16.5" r="1.5" fill="white"/>
+      </svg>
+      <span>Vel<em>mora</em></span>
+    </a>
+  </div>
+
+  <div class="auth-layout__card">
+    <router-outlet></router-outlet>
+  </div>
+
+  <p class="auth-layout__back">
+    <a routerLink="/">← Back to Home</a>
+  </p>
+</div>

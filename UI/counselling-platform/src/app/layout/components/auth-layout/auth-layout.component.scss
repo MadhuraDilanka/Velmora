@@ -1,0 +1,60 @@
+.auth-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #f0f9ff 0%, #e6f4f7 50%, #f8fafc 100%);
+  padding: 24px;
+
+  &__brand {
+    margin-bottom: 32px;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    span {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1a2e3b;
+      letter-spacing: -0.5px;
+
+      em {
+        font-style: normal;
+        color: #4A90A4;
+      }
+    }
+  }
+
+  &__card {
+    width: 100%;
+    max-width: 460px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(74, 144, 164, 0.12);
+    overflow: hidden;
+  }
+
+  &__back {
+    margin-top: 24px;
+    font-size: 14px;
+
+    a {
+      color: #4A90A4;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+
+      &:hover { opacity: 0.75; }
+    }
+  }
+}
